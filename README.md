@@ -1,2 +1,2 @@
 # Upskill
-App for it 326
+App for IT 326
