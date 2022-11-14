@@ -17,7 +17,8 @@ CREATE TABLE IF NOT EXISTS profileInfo(
     
 CREATE TABLE IF NOT EXISTS likes(
 	userID varchar(15) PRIMARY KEY,
-	likedUserID varchar(15)
+	likedUserID varchar(15),
+    likeDislike boolean
     );
 
 CREATE TABLE IF NOT EXISTS messages(
