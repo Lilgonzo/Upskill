@@ -27,3 +27,7 @@ CREATE TABLE IF NOT EXISTS messages(
     message varchar(180)
     );
     
+CREATE TABLE IF NOT EXISTS posts(
+	userID varchar(15) PRIMARY KEY,
+    postMessage varchar(15)
+    );
