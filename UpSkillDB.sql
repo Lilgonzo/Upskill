@@ -31,3 +31,9 @@ CREATE TABLE IF NOT EXISTS posts(
 	userID varchar(15) PRIMARY KEY,
     postMessage varchar(15)
     );
+    
+CREATE TABLE IF NOT EXISTS rating(
+	userID varchar(15) PRIMARY KEY,
+    userIDRated varchar(15),
+    rating varchar(5)
+    );
