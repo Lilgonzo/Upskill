@@ -1,4 +1,8 @@
+package com.api.entity;
+
+import java.util.List;
+
 public class Conversation{
-    List<Account> users;
+    List<Profile> users;
     int conversationID;
 }
