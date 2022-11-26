@@ -39,13 +39,11 @@ public class JWTUtil {
      * - (exp) when the jwt will expire
      *
      * @param userId - the subject to generate the token for (username)
-     * @param emailActive -
      * @return token - the jwts token
      */
-    public static String getJwts(String userId, Boolean emailActive, Boolean rememberMe) {
+    public static String getJwts(String userId, Boolean rememberMe) {
         return Jwts.builder()
                 .setSubject(userId)
-                .claim("emailActive", emailActive)
                 .claim("rememberMe", rememberMe)
                 .setExpiration(new Date(System.currentTimeMillis() +
                         (rememberMe? RT_DAYS_TO_EXP : AT_DAYS_TO_EXP)

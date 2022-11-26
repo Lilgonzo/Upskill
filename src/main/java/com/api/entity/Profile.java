@@ -5,6 +5,11 @@ public class Profile {
     private String username;
     private String password;
     private String email;
+    private String bio;
+
+    public String getBio() {
+        return bio;
+    }
 
     public int getUserID() {
         return userID;
@@ -34,6 +39,12 @@ public class Profile {
         private String username;
         private String password;
         private String email;
+        private String bio;
+
+        public ProfileBuilder setBio(String bio) {
+            this.bio = bio;
+            return this;
+        }
 
         public ProfileBuilder setUserID(int userID) {
             this.userID = userID;
