@@ -7,7 +7,6 @@ import io.jsonwebtoken.security.Keys;
 
 import java.security.Key;
 import java.util.Date;
-import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -19,8 +18,7 @@ public class JWTUtil {
     private static final long RT_DAYS_TO_EXP = TimeUnit.DAYS.toMillis(1); // TODO - change back to whatever
 
     static {
-        ResourceBundle resourceBundle = ResourceBundle.getBundle("jwt");
-        key = Keys.hmacShaKeyFor(resourceBundle.getString("jwt.secret_key").getBytes());
+        key = Keys.hmacShaKeyFor(System.getenv("JWT_SECRET_KEY").getBytes());
     }
 
     /**

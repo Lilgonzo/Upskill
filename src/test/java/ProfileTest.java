@@ -1,10 +1,8 @@
 import com.api.dao.DaoFactory;
 import com.api.dao.interfaces.ProfileDao;
-import com.api.entity.JWT;
 import com.api.entity.Profile;
 import com.api.security.SecurityContextMapper;
 import com.api.util.JWTUtil;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -12,26 +10,22 @@ import org.junit.jupiter.api.Test;
 public class ProfileTest {
     static ProfileDao profileDao;
 
-    static JWT jwt;
-
-    static {
-        try {
-            profileDao = (ProfileDao) DaoFactory.getDao(DaoFactory.DaoType.PROFILE);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    static String jwt;
 
     @BeforeAll
     public static void init() throws Exception {
+        profileDao = (ProfileDao) DaoFactory.getDao(DaoFactory.DaoType.PROFILE);
+
+        System.out.println(System.getenv("MYSQL_PASS"));
+        System.out.println(System.getenv("JWT_SECRET_KEY"));
         jwt = profileDao.loginProfile(
                 new Profile.ProfileBuilder()
-                        .setUsername("username")
+                        .setUsername("username2")
                         .setPassword("password")
                         .build()
-        );
+        ).getJWT();
 
-        SecurityContextMapper.setClaims(JWTUtil.verifyJwts(jwt.getJWT()).getBody());
+        SecurityContextMapper.setClaims(JWTUtil.verifyJwts(jwt).getBody());
     }
 
     @Test
@@ -50,8 +44,8 @@ public class ProfileTest {
         try {
             profileDao.createProfile(
                     new Profile.ProfileBuilder()
-                            .setUsername("unique" + (int) (Math.random() % 100) + "username" + (int) (Math.random() % 10))
-                            .setEmail("unique" + (int) (Math.random() % 100) + "email" + (int) (Math.random() % 10) + "@gmail.com")
+                            .setUsername("unique" + (int) (Math.random() * 100) + "username" + (int) (Math.random() * 10))
+                            .setEmail("unique" + (int) (Math.random() * 100) + "email" + (int) (Math.random() * 10) + "@gmail.com")
                             .setPassword("password")
                             .build()
             );
@@ -81,7 +75,7 @@ public class ProfileTest {
             profileDao.updateEmail(
                     new SecurityContextMapper(),
                     new Profile.ProfileBuilder()
-                            .setEmail("unique" + (int)(Math.random()%100) + "email" + (int)(Math.random()%10) + "@gmail.com")
+                            .setEmail("unique" + (int)(Math.random() * 100) + "email" + (int)(Math.random() * 10) + "@gmail.com")
                             .build()
             );
         } catch (Exception e) {

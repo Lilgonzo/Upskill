@@ -21,7 +21,7 @@ public final class DbUtil {
         DRIVER = resourceBundle.getString("jdbc.driver");
         URL = resourceBundle.getString("jdbc.url");
         USERNAME = resourceBundle.getString("jdbc.username");
-        PASSWORD = resourceBundle.getString("jdbc.password");
+        PASSWORD = System.getenv("MYSQL_PASS");
     }
 
     /**
