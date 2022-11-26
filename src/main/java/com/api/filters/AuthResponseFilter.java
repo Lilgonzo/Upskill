@@ -33,7 +33,7 @@ public class AuthResponseFilter implements ContainerResponseFilter {
                         .getHeaders()
                         .putSingle(
                                 HttpHeaders.AUTHORIZATION,
-                                JWTUtil.getJwts(claims.getSubject(), (Boolean) claims.get("rememberMe"))
+                                JWTUtil.getJwts(claims.getSubject())
                         );
             }
         }

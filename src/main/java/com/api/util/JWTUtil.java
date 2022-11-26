@@ -17,8 +17,6 @@ public class JWTUtil {
     private static final Key key;
     /** Refresh token expires after 30 days **/
     private static final long RT_DAYS_TO_EXP = TimeUnit.DAYS.toMillis(1); // TODO - change back to whatever
-    /** Auth token expires after 1 day **/
-    private static final long AT_DAYS_TO_EXP = TimeUnit.HOURS.toMillis(1);
 
     static {
         ResourceBundle resourceBundle = ResourceBundle.getBundle("jwt");
@@ -41,12 +39,11 @@ public class JWTUtil {
      * @param userId - the subject to generate the token for (username)
      * @return token - the jwts token
      */
-    public static String getJwts(String userId, Boolean rememberMe) {
+    public static String getJwts(String userId) {
         return Jwts.builder()
                 .setSubject(userId)
-                .claim("rememberMe", rememberMe)
                 .setExpiration(new Date(System.currentTimeMillis() +
-                        (rememberMe? RT_DAYS_TO_EXP : AT_DAYS_TO_EXP)
+                        (RT_DAYS_TO_EXP)
                 ))
                 .signWith(key)
                 .compact();

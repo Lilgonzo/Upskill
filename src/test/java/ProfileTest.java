@@ -1,19 +1,18 @@
-package Profile;
-
 import com.api.dao.DaoFactory;
 import com.api.dao.interfaces.ProfileDao;
 import com.api.entity.JWT;
 import com.api.entity.Profile;
 import com.api.security.SecurityContextMapper;
 import com.api.util.JWTUtil;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class ProfileTest {
     static ProfileDao profileDao;
 
-    JWT jwt;
+    static JWT jwt;
 
     static {
         try {
@@ -23,8 +22,8 @@ public class ProfileTest {
         }
     }
 
-    @Before
-    public void init() throws Exception {
+    @BeforeAll
+    public static void init() throws Exception {
         jwt = profileDao.loginProfile(
                 new Profile.ProfileBuilder()
                         .setUsername("username")
@@ -37,6 +36,7 @@ public class ProfileTest {
 
     @Test
     public void testLogin() throws Exception {
+
     }
 
     @Test
@@ -46,9 +46,23 @@ public class ProfileTest {
 
     @Test
     public void testCreateProfile() throws Exception {
+        // creates unique profile
+        try {
+            profileDao.createProfile(
+                    new Profile.ProfileBuilder()
+                            .setUsername("unique" + (int) (Math.random() % 100) + "username" + (int) (Math.random() % 10))
+                            .setEmail("unique" + (int) (Math.random() % 100) + "email" + (int) (Math.random() % 10) + "@gmail.com")
+                            .setPassword("password")
+                            .build()
+            );
+        } catch (Exception e) {
+            Assertions.fail("CREATE UNIQUE PROFILE FAILED");
+        }
+
+        // creates duplicate profile
+
 
     }
-
 
     /**
      * Updates email.
@@ -61,22 +75,21 @@ public class ProfileTest {
      * </ul>
      */
     @Test
-    public void testUpdateProfile() throws Exception {
+    public void testUpdateEmail() throws Exception {
         try {
             // updates unique email
-            profileDao.updateProfile(
+            profileDao.updateEmail(
                     new SecurityContextMapper(),
                     new Profile.ProfileBuilder()
-                            .setEmail("updated@email.com")
+                            .setEmail("unique" + (int)(Math.random()%100) + "email" + (int)(Math.random()%10) + "@gmail.com")
                             .build()
             );
         } catch (Exception e) {
-            Assert.fail("UNIQUE EMAIL UPDATE FAILED");
+            Assertions.fail("UNIQUE EMAIL UPDATE FAILED");
         }
 
-
         // updates email to one already existing in user database
-        profileDao.updateProfile(
+        profileDao.updateEmail(
                 new SecurityContextMapper(),
                 new Profile.ProfileBuilder()
                         .setEmail("something@gmail.com")
@@ -84,7 +97,7 @@ public class ProfileTest {
         );
 
         // updates email with invalid email format
-        profileDao.updateProfile(
+        profileDao.updateEmail(
                 new SecurityContextMapper(),
                 new Profile.ProfileBuilder()
                         .setEmail("@.com")

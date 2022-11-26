@@ -33,7 +33,7 @@ public class JdbcProfileDao implements ProfileDao {
 
             // issue jwt
             JWT jwt = new JWT();
-            jwt.setJWT(JWTUtil.getJwts(String.valueOf(resultSet.getInt(1)), false));
+            jwt.setJWT(JWTUtil.getJwts(String.valueOf(resultSet.getInt(1))));
 
             return jwt;
         } catch (Exception e) {
@@ -129,8 +129,31 @@ public class JdbcProfileDao implements ProfileDao {
 
     @Override
     public JWT loginProfile(Profile profile) throws Exception {
+        // validate format
 
+        String sql = "select count(1) from profile where username=? and password=?";
 
-        return null;
+        try (
+                Connection connection = DbUtil.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)
+                ) {
+            preparedStatement.setString(1, profile.getUsername());
+            preparedStatement.setString(2, profile.getPassword());
+            preparedStatement.executeQuery();
+
+            ResultSet resultSet = preparedStatement.getResultSet();
+            resultSet.next();
+
+            if (resultSet.getInt(1) == 0)
+                throw new Exception("Invalid Login");
+
+            // produce new jwts for user
+            JWT jwt = new JWT();
+            jwt.setJWT(JWTUtil.getJwts(resultSet.getString("userId")));
+
+            resultSet.close();
+
+            return jwt;
+        }
     }
 }
