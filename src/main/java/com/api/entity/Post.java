@@ -1,5 +1,7 @@
+package com.api.entity;
+
 public class Post{
-    Account user;
+    Profile user;
     int postID;
     String title;
     String description;

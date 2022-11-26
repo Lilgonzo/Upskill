@@ -1,5 +1,7 @@
+package com.api.entity;
+
 public class Skill{
-    Account user = null;
+    Profile user = null;
     Type skillType = null;
     
 }

@@ -1,5 +1,9 @@
+package com.api.entity;
+
+import java.util.List;
+
 public class Interaction{
-    Account user;
-    List<Account> liked;
-    List<Account> disliked;
+    Profile user;
+    List<Profile> liked;
+    List<Profile> disliked;
 }
