@@ -26,14 +26,6 @@ public class ProfileResource {
         return Response.ok(profileDao.loginProfile(profile)).build();
     }
 
-    @GET
-    @Path("test")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response test(Profile profile) throws Exception {
-        return Response.ok(profile).build();
-    }
-
     @DELETE
     @Secured
     @Path("/profile")

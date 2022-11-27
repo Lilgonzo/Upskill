@@ -1,12 +1,22 @@
 package com.api.entity;
 
-public class Profile {
+import java.util.List;
 
+public class Profile {
     private int userID;
     private String username;
     private String password;
     private String email;
     private String bio;
+    private List<Rating> ratings;
+
+    public List<Rating> getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(List<Rating> ratings) {
+        this.ratings = ratings;
+    }
 
     public void setUserID(int userID) {
         this.userID = userID;
