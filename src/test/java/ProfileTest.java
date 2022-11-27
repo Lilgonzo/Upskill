@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class ProfileTest {
+    static Profile profile;
     static ProfileDao profileDao;
 
     static String jwt;
@@ -16,24 +17,23 @@ public class ProfileTest {
     public static void init() throws Exception {
         profileDao = (ProfileDao) DaoFactory.getDao(DaoFactory.DaoType.PROFILE);
 
-        jwt = profileDao.loginProfile(
-                new Profile.ProfileBuilder()
-                        .setUsername("username")
-                        .setPassword("password")
-                        .build()
-        ).getJWT();
+        profile = new Profile();
+        profile.setUsername("username");
+        profile.setPassword("password");
+
+        jwt = profileDao.loginProfile(profile).getJWT();
 
         SecurityContextMapper.setClaims(JWTUtil.verifyJwts(jwt).getBody());
     }
 
     @Test
     public void testUpdateBio() throws Exception {
+        profile.setBio("Rawr");
+
         try {
             profileDao.updateBio(
                     new SecurityContextMapper(),
-                    new Profile.ProfileBuilder()
-                            .setBio("Rawr")
-                            .build()
+                    profile
             );
         } catch (Exception e) {
             Assertions.fail("UPDATE BIO FAILED");
@@ -53,13 +53,13 @@ public class ProfileTest {
     @Test
     public void testCreateProfile() throws Exception {
         // creates unique profile
+        profile.setUsername("unique" + (int) (Math.random() * 100) + "username" + (int) (Math.random() * 10));
+        profile.setEmail("unique" + (int) (Math.random() * 100) + "email" + (int) (Math.random() * 10) + "@gmail.com");
+        profile.setPassword("password");
+
         try {
             profileDao.createProfile(
-                    new Profile.ProfileBuilder()
-                            .setUsername("unique" + (int) (Math.random() * 100) + "username" + (int) (Math.random() * 10))
-                            .setEmail("unique" + (int) (Math.random() * 100) + "email" + (int) (Math.random() * 10) + "@gmail.com")
-                            .setPassword("password")
-                            .build()
+                    profile
             );
         } catch (Exception e) {
             Assertions.fail("CREATE UNIQUE PROFILE FAILED");
@@ -82,13 +82,12 @@ public class ProfileTest {
      */
     @Test
     public void testUpdateEmail() throws Exception {
+        profile.setEmail("unique" + (int)(Math.random() * 100) + "email" + (int)(Math.random() * 10) + "@gmail.com");
         try {
             // updates unique email
             profileDao.updateEmail(
                     new SecurityContextMapper(),
-                    new Profile.ProfileBuilder()
-                            .setEmail("unique" + (int)(Math.random() * 100) + "email" + (int)(Math.random() * 10) + "@gmail.com")
-                            .build()
+                    profile
             );
         } catch (Exception e) {
             Assertions.fail("UNIQUE EMAIL UPDATE FAILED");

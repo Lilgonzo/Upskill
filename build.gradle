@@ -15,7 +15,6 @@ dependencies {
 
     providedCompile 'jakarta.platform:jakarta.jakartaee-api:9.1.0'
 
-    // This dependency is used by the application.
     implementation 'mysql:mysql-connector-java:8.0.31'
     implementation 'com.google.guava:guava:30.1.1-jre'
     implementation 'jakarta.ws.rs:jakarta.ws.rs-api:3.1.0'

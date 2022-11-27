@@ -143,7 +143,7 @@ public class JdbcProfileDao implements ProfileDao {
             ResultSet resultSet = preparedStatement.getResultSet();
 
             if (!resultSet.next())
-                throw new Exception("Invalid Login");
+                throw new Exception("User Not Found");
 
             // produce new jwts for user
             JWT jwt = new JWT();
