@@ -98,8 +98,7 @@ public class JdbcProfileDao implements ProfileDao {
             // todo throw invalid format exception
 
         String sql =
-                "update profile " +
-                        "set bio=? where userID=" + securityContext.getUserPrincipal().getName();
+                "update profile set bio=? where userID=" + securityContext.getUserPrincipal().getName();
 
         try (
                 Connection connection = DbUtil.getConnection();

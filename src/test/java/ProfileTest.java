@@ -16,11 +16,9 @@ public class ProfileTest {
     public static void init() throws Exception {
         profileDao = (ProfileDao) DaoFactory.getDao(DaoFactory.DaoType.PROFILE);
 
-        System.out.println(System.getenv("MYSQL_PASS"));
-        System.out.println(System.getenv("JWT_SECRET_KEY"));
         jwt = profileDao.loginProfile(
                 new Profile.ProfileBuilder()
-                        .setUsername("username2")
+                        .setUsername("username")
                         .setPassword("password")
                         .build()
         ).getJWT();
@@ -29,8 +27,22 @@ public class ProfileTest {
     }
 
     @Test
-    public void testLogin() throws Exception {
+    public void testUpdateBio() throws Exception {
+        try {
+            profileDao.updateBio(
+                    new SecurityContextMapper(),
+                    new Profile.ProfileBuilder()
+                            .setBio("Rawr")
+                            .build()
+            );
+        } catch (Exception e) {
+            Assertions.fail("UPDATE BIO FAILED");
+        }
+    }
 
+    @Test
+    public void testLogin() throws Exception {
+        // todo - already used in init beforeall not sure if this is needed??
     }
 
     @Test
@@ -82,21 +94,21 @@ public class ProfileTest {
             Assertions.fail("UNIQUE EMAIL UPDATE FAILED");
         }
 
-        // updates email to one already existing in user database
+        /*// updates email to one already existing in user database
         profileDao.updateEmail(
                 new SecurityContextMapper(),
                 new Profile.ProfileBuilder()
                         .setEmail("something@gmail.com")
                         .build()
-        );
+        );*/
 
-        // updates email with invalid email format
+        /*// updates email with invalid email format
         profileDao.updateEmail(
                 new SecurityContextMapper(),
                 new Profile.ProfileBuilder()
                         .setEmail("@.com")
                         .build()
-        );
+        );*/
     }
 
     @Test

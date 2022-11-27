@@ -32,6 +32,7 @@ public class Profile {
         this.email = profileBuilder.email;
         this.password = profileBuilder.password;
         this.username = profileBuilder.username;
+        this.bio = profileBuilder.bio;
     }
 
     public static class ProfileBuilder {
