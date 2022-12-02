@@ -19,6 +19,14 @@ public class ProfileResource {
     }
 
     @GET
+    @Secured
+    @Path("matching-skills")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getSimilarSkillProfiles(@Context SecurityContext securityContext) throws Exception {
+        return Response.ok(profileDao.getProfilesWithSimilarSkills(securityContext)).build();
+    }
+
+    @GET
     @Path("profile/login")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -85,5 +93,4 @@ public class ProfileResource {
         profileDao.updatePassword(securityContext, profile);
         return Response.ok().build();
     }
-
 }

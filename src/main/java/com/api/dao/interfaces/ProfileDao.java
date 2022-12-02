@@ -4,6 +4,8 @@ import com.api.entity.JWT;
 import com.api.entity.Profile;
 import jakarta.ws.rs.core.SecurityContext;
 
+import java.util.List;
+
 public interface ProfileDao {
     // CRUD OPERATIONS
 
@@ -60,6 +62,14 @@ public interface ProfileDao {
      * @throws Exception e
      */
     void deleteProfile(SecurityContext securityContext) throws Exception;
+
+    /**
+     * Returns profiles with similar interests.
+     * @param securityContext the user
+     * @return {List} of profiles with similar interests
+     * @throws Exception e
+     */
+    List<Profile> getProfilesWithSimilarSkills(SecurityContext securityContext) throws Exception;
 
     /**
      * Returns a JWT token if login was a success other throws an exception.

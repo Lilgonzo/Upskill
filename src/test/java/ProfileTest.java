@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 public class ProfileTest {
     static Profile profile;
     static ProfileDao profileDao;
-
     static String jwt;
 
     @BeforeAll
@@ -24,6 +23,17 @@ public class ProfileTest {
         jwt = profileDao.loginProfile(profile).getJWT();
 
         SecurityContextMapper.setClaims(JWTUtil.verifyJwts(jwt).getBody());
+    }
+
+    @Test
+    public void testGetProfilesWithSimilarSkills() throws Exception {
+        profileDao = (ProfileDao) DaoFactory.getDao(DaoFactory.DaoType.PROFILE);
+
+        var profiles = profileDao.getProfilesWithSimilarSkills(new SecurityContextMapper());
+        for (var profile: profiles) {
+            System.out.println("Username: " + profile.getUsername());
+            System.out.println("Email: " + profile.getEmail());
+        }
     }
 
     @Test
