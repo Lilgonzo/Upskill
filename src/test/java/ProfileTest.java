@@ -1,20 +1,19 @@
-import com.api.dao.DaoFactory;
-import com.api.dao.interfaces.ProfileDao;
-import com.api.entity.Profile;
+import com.api.managers.ProfileManager;
+import com.api.entities.Profile;
 import com.api.security.SecurityContextMapper;
-import com.api.util.JWTUtil;
+import com.api.utils.JWTUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class ProfileTest {
     static Profile profile;
-    static ProfileDao profileDao;
+    static ProfileManager profileDao;
     static String jwt;
 
     @BeforeAll
     public static void init() throws Exception {
-        profileDao = (ProfileDao) DaoFactory.getDao(DaoFactory.DaoType.PROFILE);
+        profileDao = new ProfileManager();
 
         profile = new Profile();
         profile.setUsername("username");
@@ -27,7 +26,7 @@ public class ProfileTest {
 
     @Test
     public void testGetProfilesWithSimilarSkills() throws Exception {
-        profileDao = (ProfileDao) DaoFactory.getDao(DaoFactory.DaoType.PROFILE);
+        profileDao = new ProfileManager();
 
         var profiles = profileDao.getProfilesWithSimilarSkills(new SecurityContextMapper());
         for (var profile: profiles) {

@@ -1,4 +1,4 @@
-package com.api.entity;
+package com.api.entities;
 
 public class Post{
     Profile user;

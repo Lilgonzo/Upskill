@@ -1,10 +1,9 @@
-package com.api.dao.concrete;
+package com.api.managers;
 
-import com.api.entity.JWT;
-import com.api.entity.Profile;
-import com.api.dao.interfaces.ProfileDao;
-import com.api.util.DbUtil;
-import com.api.util.JWTUtil;
+import com.api.entities.JWT;
+import com.api.entities.Profile;
+import com.api.utils.DbUtil;
+import com.api.utils.JWTUtil;
 import jakarta.ws.rs.core.SecurityContext;
 
 import java.sql.Connection;
@@ -14,9 +13,8 @@ import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
 
-public class JdbcProfileDao implements ProfileDao {
+public class ProfileManager {
 
-    @Override
     public JWT createProfile(Profile profile) throws Exception {
         String sql = "insert into profile(username, password, email) values (?, ?, ?)";
 
@@ -44,14 +42,12 @@ public class JdbcProfileDao implements ProfileDao {
 
     }
 
-    @Override
     public Profile getProfile(SecurityContext securityContext, String username) throws Exception {
         // todo
 
         return null;
     }
 
-    @Override
     public void updateUsername(SecurityContext securityContext, Profile profile) throws Exception {
         // todo username format invalid
             // todo throw invalid format exception
@@ -73,7 +69,6 @@ public class JdbcProfileDao implements ProfileDao {
         }
     }
 
-    @Override
     public void updatePassword(SecurityContext securityContext, Profile profile) throws Exception {
         // todo password format invalid
             // todo throw invalid format exception
@@ -94,7 +89,6 @@ public class JdbcProfileDao implements ProfileDao {
         }
     }
 
-    @Override
     public void updateBio(SecurityContext securityContext, Profile profile) throws Exception {
         // todo bio format invalid
             // todo throw invalid format exception
@@ -115,20 +109,17 @@ public class JdbcProfileDao implements ProfileDao {
         }
     }
 
-    @Override
     public void updateEmail(SecurityContext securityContext, Profile profile) throws Exception {
         // todo email format invalid
             // todo throw invalid format exception
 
     }
 
-    @Override
     public void deleteProfile(SecurityContext securityContext) throws Exception {
 
 
     }
 
-    @Override
     public List<Profile> getProfilesWithSimilarSkills(SecurityContext securityContext) throws Exception {
         String userId = securityContext.getUserPrincipal().getName();
 
@@ -165,7 +156,6 @@ public class JdbcProfileDao implements ProfileDao {
         }
     }
 
-    @Override
     public JWT loginProfile(Profile profile) throws Exception {
         // validate format
 
