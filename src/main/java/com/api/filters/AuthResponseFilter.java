@@ -1,7 +1,7 @@
 package com.api.filters;
 
 import com.api.security.SecurityContextMapper;
-import com.api.util.JWTUtil;
+import com.api.utils.JWTUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.annotation.Priority;
 import jakarta.ws.rs.Priorities;
@@ -33,7 +33,7 @@ public class AuthResponseFilter implements ContainerResponseFilter {
                         .getHeaders()
                         .putSingle(
                                 HttpHeaders.AUTHORIZATION,
-                                JWTUtil.getJwts(claims.getSubject(), (Boolean) claims.get("rememberMe"))
+                                JWTUtil.getJwts(claims.getSubject())
                         );
             }
         }

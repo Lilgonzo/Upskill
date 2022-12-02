@@ -5,19 +5,17 @@ plugins {
 }
 
 repositories {
-    // Use Maven Central for resolving dependencies.
     mavenCentral()
 }
 
 dependencies {
     // Use JUnit test framework.
-    testImplementation 'junit:junit:4.13.2'
-    implementation 'mysql:mysql-connector-java:8.0.31'
+    testImplementation('org.junit.jupiter:junit-jupiter-api:5.9.0')
+    testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine:5.9.0')
 
     providedCompile 'jakarta.platform:jakarta.jakartaee-api:9.1.0'
-    //providedCompile 'org.eclipse.microprofile:microprofile:5.0'
 
-    // This dependency is used by the application.
+    implementation 'mysql:mysql-connector-java:8.0.31'
     implementation 'com.google.guava:guava:30.1.1-jre'
     implementation 'jakarta.ws.rs:jakarta.ws.rs-api:3.1.0'
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
@@ -33,4 +31,8 @@ liberty {
         name = 'upskill'
         serverXmlFile=project.file("server.xml")
     }
+}
+
+test {
+    useJUnitPlatform()
 }

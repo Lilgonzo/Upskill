@@ -1,4 +1,4 @@
-package com.api.util;
+package com.api.utils;
 
 public class ValidationUtil {
 
@@ -21,7 +21,7 @@ public class ValidationUtil {
     public static boolean validateUsernameFormat(String username) {
         // todo validate password (0 < username > 21) chars long
         // eg.
-        return username.matches("/* SOME REGEX VALUE */");
+        return username.matches();
     }
 
     private static boolean validateBioFormat(String bio) {

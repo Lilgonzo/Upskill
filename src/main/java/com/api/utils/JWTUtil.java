@@ -1,4 +1,4 @@
-package com.api.util;
+package com.api.utils;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -7,7 +7,6 @@ import io.jsonwebtoken.security.Keys;
 
 import java.security.Key;
 import java.util.Date;
-import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -17,12 +16,9 @@ public class JWTUtil {
     private static final Key key;
     /** Refresh token expires after 30 days **/
     private static final long RT_DAYS_TO_EXP = TimeUnit.DAYS.toMillis(1); // TODO - change back to whatever
-    /** Auth token expires after 1 day **/
-    private static final long AT_DAYS_TO_EXP = TimeUnit.HOURS.toMillis(1);
 
     static {
-        ResourceBundle resourceBundle = ResourceBundle.getBundle("jwt");
-        key = Keys.hmacShaKeyFor(resourceBundle.getString("jwt.secret_key").getBytes());
+        key = Keys.hmacShaKeyFor(System.getenv("JWT_SECRET_KEY").getBytes());
     }
 
     /**
@@ -41,12 +37,11 @@ public class JWTUtil {
      * @param userId - the subject to generate the token for (username)
      * @return token - the jwts token
      */
-    public static String getJwts(String userId, Boolean rememberMe) {
+    public static String getJwts(String userId) {
         return Jwts.builder()
                 .setSubject(userId)
-                .claim("rememberMe", rememberMe)
                 .setExpiration(new Date(System.currentTimeMillis() +
-                        (rememberMe? RT_DAYS_TO_EXP : AT_DAYS_TO_EXP)
+                        (RT_DAYS_TO_EXP)
                 ))
                 .signWith(key)
                 .compact();
