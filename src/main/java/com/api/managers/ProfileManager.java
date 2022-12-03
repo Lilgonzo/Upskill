@@ -2,7 +2,7 @@ package com.api.managers;
 
 import com.api.entities.JWT;
 import com.api.entities.Profile;
-import com.api.utils.DbUtil;
+import com.api.utils.DbComm;
 import com.api.utils.JWTUtil;
 import jakarta.ws.rs.core.SecurityContext;
 
@@ -19,7 +19,7 @@ public class ProfileManager {
         String sql = "insert into profile(username, password, email) values (?, ?, ?)";
 
         try (
-                Connection connection = DbUtil.getConnection();
+                Connection connection = DbComm.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)
                 ) {
 
@@ -57,7 +57,7 @@ public class ProfileManager {
                         "set username=? where userID=" + securityContext.getUserPrincipal().getName();
 
         try (
-                Connection connection = DbUtil.getConnection();
+                Connection connection = DbComm.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(sql)
         ) {
             preparedStatement.setString(1, profile.getUsername());
@@ -78,7 +78,7 @@ public class ProfileManager {
                         "set password=? where userID=" + securityContext.getUserPrincipal().getName();
 
         try (
-                Connection connection = DbUtil.getConnection();
+                Connection connection = DbComm.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(sql)
         ) {
             preparedStatement.setString(1, profile.getPassword());
@@ -97,7 +97,7 @@ public class ProfileManager {
                 "update profile set bio=? where userID=" + securityContext.getUserPrincipal().getName();
 
         try (
-                Connection connection = DbUtil.getConnection();
+                Connection connection = DbComm.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(sql)
         ) {
             preparedStatement.setString(1, profile.getBio());
@@ -132,7 +132,7 @@ public class ProfileManager {
                     "s.skillTypeID IN (select s1.skillTypeID from skill s1 where s1.userID=" + userId + ")";
 
         try (
-                Connection connection = DbUtil.getConnection();
+                Connection connection = DbComm.getConnection();
                 Statement statement = connection.createStatement()
                 ) {
 
@@ -162,7 +162,7 @@ public class ProfileManager {
         String sql = "select userID from profile where username=? and password=?";
 
         try (
-                Connection connection = DbUtil.getConnection();
+                Connection connection = DbComm.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)
                 ) {
             preparedStatement.setString(1, profile.getUsername());

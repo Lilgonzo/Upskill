@@ -7,13 +7,13 @@ import java.util.ResourceBundle;
 /**
  * Establishes connection to database
  */
-public final class DbUtil {
+public final class DbComm {
     private static final String DRIVER;
     private static final String URL;
     private static final String USERNAME;
     private static final String PASSWORD;
 
-    private DbUtil(){}
+    private DbComm(){}
 
     // Executes once class to loaded
     static {
