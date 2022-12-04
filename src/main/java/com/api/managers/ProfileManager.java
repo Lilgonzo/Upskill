@@ -190,4 +190,9 @@ public class ProfileManager {
             return jwt;
         }
     }
+    
+     public List<Profile> getProfilesWithSimilarInterest(SecurityContext securityContext) throws Exception {
+         
+     }
+    
 }
