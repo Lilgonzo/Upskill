@@ -92,4 +92,13 @@ public class ProfileController {
         manager.updatePassword(securityContext, profile);
         return Response.ok().build();
     }
+    
+    
+    //todo: add like and dislike profile 
+    
+    //
+    //public Response likeProfile(@Context SecurityContext securityContext, )
+        
+    //public Response dislikeProfile(@Context SecurityContext securityContext, )
+    
 }
