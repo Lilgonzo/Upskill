@@ -3,7 +3,7 @@ package com.api.entities;
 public class ProfileDB{
     boolean confirmation;
 
-    public static void deleteAccount(int userID){
+    public static void deleteProfile(int userID){
 
     }
 
@@ -24,7 +24,7 @@ public class ProfileDB{
     }
 
     public static void updatePassword(int userID, string password){
-
+        
     }
 
     public static void updateSkills(Skill skill){
@@ -35,12 +35,12 @@ public class ProfileDB{
 
     }
 
-    public static void createAccount(string username, string password, string email){
+    public static void createProfile(string username, string password, string email){
 
     }
 
     //like value is for whether the given account should be added to the like or dislike list
-    public static void updateInteraction(boolean like, Account account){
+    public static void updateInteraction(boolean like, Profile profile){
         //add account to this accounts liked or disliked list based on like
     }
 
