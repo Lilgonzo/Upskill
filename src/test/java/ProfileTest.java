@@ -39,7 +39,19 @@ public class ProfileTest {
             System.out.println("Email: " + profile.getEmail());
         }
     }
+     /**
+     * Tests profile with similar interests 
+     */
+    @Test
+    public void testGetProfilesWithSimilarInterests() throws Exception {
+        profileDao = new ProfileManager();
 
+        var profiles = profileDao.getProfilesWithSimilarInterests(new SecurityContextMapper());
+        for (var profile: profiles) {
+            System.out.println("Username: " + profile.getUsername());
+            System.out.println("Email: " + profile.getEmail());
+        }
+    }
     /**
      * Tests Updating bio.
      */
