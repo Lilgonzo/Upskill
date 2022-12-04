@@ -192,7 +192,39 @@ public class ProfileManager {
     }
     
      public List<Profile> getProfilesWithSimilarInterest(SecurityContext securityContext) throws Exception {
-         
+        String userId = securityContext.getUserPrincipal().getName();
+        //fix for interest instead of skill
+        String sql =
+                "select distinct bio, username, email from profile p " +
+                    "join skill s on p.userID=s.userID " +
+                    "join skilltype st on s.skillTypeID = st.skillTypeID " +
+                "where " +
+                    "p.userID!=" + userId + " and " +
+                    "s.skillTypeID IN (select s1.skillTypeID from skill s1 where s1.userID=" + userId + ")";
+        
+         try (
+                Connection connection = DbComm.getConnection();
+                Statement statement = connection.createStatement()
+                ) {
+
+            ResultSet resultSet = statement.executeQuery(sql);
+
+            Profile profile;
+            List<Profile> profiles = new LinkedList<>();
+            while (resultSet.next()) {
+                profile = new Profile();
+                profile.setBio(resultSet.getString("bio"));
+                profile.setEmail(resultSet.getString("email"));
+                profile.setUsername(resultSet.getString("username"));
+
+                profiles.add(profile);
+            }
+
+            return profiles;
+
+        } catch (Exception e) {
+            throw new Exception(e);
+        }
      }
     
 }
