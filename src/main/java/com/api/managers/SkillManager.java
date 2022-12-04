@@ -15,7 +15,11 @@ import java.util.List;
 
 
 public class SkillManager(){
-
+  
+  public JWT addSkilltype(Type string) throws Exception {
+  
+  
+  
 }
 
 
