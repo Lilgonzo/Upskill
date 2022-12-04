@@ -28,7 +28,9 @@ public class ProfileTest {
 
         SecurityContextMapper.setClaims(JWTUtil.verifyJwts(jwt).getBody());
     }
-
+    /**
+     * Tests profile with similar skills  
+     */
     @Test
     public void testGetProfilesWithSimilarSkills() throws Exception {
         profileDao = new ProfileManager();
@@ -68,12 +70,18 @@ public class ProfileTest {
             Assertions.fail("UPDATE BIO FAILED");
         }
     }
-
+    
+    /**
+     * Tests login 
+     */
     @Test
     public void testLogin() {
         // todo - already used in init beforeall not sure if this is needed??
     }
-
+    
+    /**
+     * Tests get profile 
+     */
     @Test
     public void testGetProfile() {
 
