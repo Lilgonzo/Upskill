@@ -49,9 +49,6 @@ public class ProfileManager {
     }
 
     public void updateUsername(SecurityContext securityContext, Profile profile) throws Exception {
-        // todo username format invalid
-            // todo throw invalid format exception
-
         String sql =
                 "update profile " +
                         "set username=? where userID=" + securityContext.getUserPrincipal().getName();
@@ -70,9 +67,6 @@ public class ProfileManager {
     }
 
     public void updatePassword(SecurityContext securityContext, Profile profile) throws Exception {
-        // todo password format invalid
-            // todo throw invalid format exception
-
         String sql =
                 "update profile " +
                         "set password=? where userID=" + securityContext.getUserPrincipal().getName();
@@ -90,9 +84,6 @@ public class ProfileManager {
     }
 
     public void updateBio(SecurityContext securityContext, Profile profile) throws Exception {
-        // todo bio format invalid
-            // todo throw invalid format exception
-
         String sql =
                 "update profile set bio=? where userID=" + securityContext.getUserPrincipal().getName();
 
@@ -110,14 +101,31 @@ public class ProfileManager {
     }
 
     public void updateEmail(SecurityContext securityContext, Profile profile) throws Exception {
-        // todo email format invalid
-            // todo throw invalid format exception
+        String sql =
+                "update profile set email=" + profile.getEmail() + " where userID=" + securityContext.getUserPrincipal().getName();
 
+        try (
+                Connection connection = DbComm.getConnection();
+                Statement statement = connection.createStatement()
+                ) {
+            statement.executeUpdate(sql);
+        } catch (Exception e) {
+            throw new Exception(e);
+        }
     }
 
     public void deleteProfile(SecurityContext securityContext) throws Exception {
+        String sql =
+                "delete from profile where userID=" + securityContext.getUserPrincipal().getName();
 
-
+        try (
+                Connection connection = DbComm.getConnection();
+                Statement statement = connection.createStatement()
+                ) {
+            statement.executeUpdate(sql);
+        } catch (Exception e) {
+            throw new Exception(e);
+        }
     }
 
     public List<Profile> getProfilesWithSimilarSkills(SecurityContext securityContext) throws Exception {
@@ -157,8 +165,6 @@ public class ProfileManager {
     }
 
     public JWT loginProfile(Profile profile) throws Exception {
-        // validate format
-
         String sql = "select userID from profile where username=? and password=?";
 
         try (
