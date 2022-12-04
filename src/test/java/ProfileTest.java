@@ -184,7 +184,7 @@ public class ProfileTest {
     @Test
     public void testUpdatePassword() {
         try {
-            //profileDao.deleteProfile(new SecurityContextMapper());
+            profileDao.deleteProfile(new SecurityContextMapper());
         } catch (Exception e) {
             Assertions.fail("UPDATE PASSWORD FAILED");
         }
