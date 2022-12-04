@@ -4,16 +4,19 @@ import com.api.entities.JWT;
 import com.api.entities.Profile;
 import com.api.utils.DbComm;
 import com.api.utils.JWTUtil;
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.SecurityContext;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.LinkedList;
 import java.util.List;
 
 public class ProfileManager {
+
+    public List<Profile> getMatches(SecurityContext securityContext) throws Exception {
+        String sql =
+                ""
+    }
 
     public JWT createProfile(Profile profile) throws Exception {
         String sql = "insert into profile(username, password, email) values (?, ?, ?)";
@@ -36,16 +39,36 @@ public class ProfileManager {
             jwt.setJWT(JWTUtil.getJwts(String.valueOf(resultSet.getInt(1))));
 
             return jwt;
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new Exception(e);
         }
 
     }
 
-    public Profile getProfile(SecurityContext securityContext, String username) throws Exception {
-        // todo
+    public Profile getProfile(String username) throws Exception {
+        String sql =
+                "select * from profile where username=?";
 
-        return null;
+        try (
+                Connection connection = DbComm.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sql)
+                ) {
+            preparedStatement.setString(1, username);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (!resultSet.next())
+                throw new NotFoundException("User not found");
+
+            Profile profile = new Profile();
+            profile.setEmail(resultSet.getString("email"));
+            profile.setUsername(resultSet.getString("username"));
+            profile.setBio(resultSet.getString("bio"));
+
+            return profile;
+        } catch (Exception e) {
+            throw new Exception(e);
+        }
     }
 
     public void updateUsername(SecurityContext securityContext, Profile profile) throws Exception {
@@ -102,14 +125,17 @@ public class ProfileManager {
 
     public void updateEmail(SecurityContext securityContext, Profile profile) throws Exception {
         String sql =
-                "update profile set email=? where userID=" + securityContext.getUserPrincipal().getName();
+                "update profile " +
+                    "set email=? " +
+                    "where userID = " + securityContext.getUserPrincipal().getName();
 
         try (
                 Connection connection = DbComm.getConnection();
-                PreparedStatement statement = connection.prepareStatement(sql)
+                PreparedStatement preparedStatement = connection.prepareStatement(sql)
                 ) {
-            statement.setString(1, profile.getEmail());
-            statement.executeUpdate(sql);
+            preparedStatement.setString(1, profile.getEmail());
+            preparedStatement.executeUpdate();
+
         } catch (Exception e) {
             throw new Exception(e);
         }

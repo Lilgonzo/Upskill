@@ -19,6 +19,14 @@ public class ProfileController {
 
     @GET
     @Secured
+    @Path("profile")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getMatches(@Context SecurityContext securityContext) throws Exception {
+
+    }
+
+    @GET
+    @Secured
     @Path("matching-skills")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getSimilarSkillProfiles(@Context SecurityContext securityContext) throws Exception {
@@ -53,8 +61,8 @@ public class ProfileController {
     @Secured
     @Path("{username}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getProfile(@Context SecurityContext securityContext, @PathParam("username") String username) throws Exception {
-        return Response.ok(manager.getProfile(securityContext, username)).build();
+    public Response getProfile(@PathParam("username") String username) throws Exception {
+        return Response.ok(manager.getProfile(username)).build();
     }
 
     @PATCH

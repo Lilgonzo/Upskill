@@ -1,3 +1,4 @@
+/*
 package com.api.entities;
 
 public class ProfileDB{
@@ -52,4 +53,4 @@ public class ProfileDB{
     public static void retrieveAccount(Account account){
 
     }
-}
+}*/

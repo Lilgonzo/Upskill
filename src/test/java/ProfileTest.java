@@ -21,7 +21,7 @@ public class ProfileTest {
         profileDao = new ProfileManager();
 
         profile = new Profile();
-        profile.setUsername("username2");
+        profile.setUsername("username");
         profile.setPassword("password");
 
         jwt = profileDao.loginProfile(profile).getJWT();
@@ -29,19 +29,21 @@ public class ProfileTest {
         SecurityContextMapper.setClaims(JWTUtil.verifyJwts(jwt).getBody());
     }
 
+    /**
+     * Test for getting profiles with similar skills.
+     */
     @Test
-    public void testGetProfilesWithSimilarSkills() throws Exception {
-        profileDao = new ProfileManager();
-
-        var profiles = profileDao.getProfilesWithSimilarSkills(new SecurityContextMapper());
-        for (var profile: profiles) {
-            System.out.println("Username: " + profile.getUsername());
-            System.out.println("Email: " + profile.getEmail());
+    public void testGetProfilesWithSimilarSkills() {
+        try {
+            profileDao.getProfilesWithSimilarSkills(new SecurityContextMapper());
+        } catch (Exception e) {
+            Assertions.fail("TEST GET PROFILE WITH SIMILAR INTEREST FAILED", e);
         }
+
     }
 
     /**
-     * Tests Updating bio.
+     * Tests updating bio.
      */
     @Test
     public void testUpdateBio() {
@@ -57,14 +59,16 @@ public class ProfileTest {
         }
     }
 
-    @Test
-    public void testLogin() {
-        // todo - already used in init beforeall not sure if this is needed??
-    }
-
+    /**
+     * Test get profile
+     */
     @Test
     public void testGetProfile() {
-
+        try {
+            profileDao.getProfile("username");
+        } catch (Exception e) {
+            Assertions.fail("FAILED TO GET PROFILE", e);
+        }
     }
 
     /**
@@ -95,10 +99,12 @@ public class ProfileTest {
         profile.setEmail("unique" + (int) (Math.random() * 100) + "email" + (int) (Math.random() * 10) + "@gmail.com");
         profile.setPassword("password");
 
-        Assertions.assertThrows(SQLIntegrityConstraintViolationException.class,
-                () -> profileDao.createProfile(profile),
-                "CREATE PROFILE - DUPLICATE USERNAME TEST FAILED"
-        );
+        try {
+            profileDao.createProfile(profile);
+        } catch (Exception e) {
+            return;
+        }
+        Assertions.fail("CREATE PROFILE - DUPLICATE USERNAME TEST FAILED");
     }
 
     /**
@@ -110,10 +116,12 @@ public class ProfileTest {
         profile.setEmail("something@gmail.com");
         profile.setPassword("password");
 
-        Assertions.assertThrows(SQLIntegrityConstraintViolationException.class,
-                () -> profileDao.createProfile(profile),
-                "CREATE PROFILE - DUPLICATE EMAIL TEST FAILED"
-        );
+        try {
+            profileDao.createProfile(profile);
+        } catch (Exception e) {
+            return;
+        }
+        Assertions.fail("CREATE PROFILE - DUPLICATE EMAIL TEST FAILED");
     }
 
     /**
@@ -129,8 +137,7 @@ public class ProfileTest {
                     profile
             );
         } catch (Exception e) {
-            //Assertions.fail("UPDATE PROFILE - UNIQUE EMAIL UPDATE FAILED");
-            throw new Exception(e);
+            Assertions.fail("UPDATE PROFILE - UNIQUE EMAIL UPDATE FAILED", e);
         }
     }
 
@@ -139,17 +146,17 @@ public class ProfileTest {
      */
     @Test
     public void testUpdateDuplicateEmail() {
-        profile.setEmail("something2@gmail.com");
-
-        Assertions.assertThrows(
-            SQLIntegrityConstraintViolationException.class,
-                () ->
-                    profileDao.updateEmail(
-                        new SecurityContextMapper(),
-                        profile
-                    ),
-                "UPDATE PROFILE - DUPLICATE EMAIL UPDATE FAILED"
-        );
+        profile.setEmail("something@gmail.com");
+        try {
+            // updates unique email
+            profileDao.updateEmail(
+                    new SecurityContextMapper(),
+                    profile
+            );
+        } catch (Exception e) {
+            return;
+        }
+        Assertions.fail("UPDATE PROFILE - DUPLICATE EMAIL UPDATE FAILED");
     }
 
     /**
@@ -171,8 +178,9 @@ public class ProfileTest {
      */
     @Test
     public void testUpdatePassword() {
+        profile.setPassword("password");
         try {
-            //profileDao.deleteProfile(new SecurityContextMapper());
+            profileDao.updatePassword(new SecurityContextMapper(), profile);
         } catch (Exception e) {
             Assertions.fail("UPDATE PASSWORD FAILED");
         }
