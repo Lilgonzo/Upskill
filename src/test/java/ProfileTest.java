@@ -6,6 +6,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.sql.SQLIntegrityConstraintViolationException;
+
+/**
+ * Test class for testing ProfileManager class
+ */
 public class ProfileTest {
     static Profile profile;
     static ProfileManager profileDao;
@@ -35,8 +40,11 @@ public class ProfileTest {
         }
     }
 
+    /**
+     * Tests Updating bio.
+     */
     @Test
-    public void testUpdateBio() throws Exception {
+    public void testUpdateBio() {
         profile.setBio("Rawr");
 
         try {
@@ -50,17 +58,20 @@ public class ProfileTest {
     }
 
     @Test
-    public void testLogin() throws Exception {
+    public void testLogin() {
         // todo - already used in init beforeall not sure if this is needed??
     }
 
     @Test
-    public void testGetProfile() throws Exception {
+    public void testGetProfile() {
 
     }
 
+    /**
+     * Test create unique profile.
+     */
     @Test
-    public void testCreateProfile() throws Exception {
+    public void testCreateUniqueProfile() {
         // creates unique profile
         profile.setUsername("unique" + (int) (Math.random() * 100) + "username" + (int) (Math.random() * 10));
         profile.setEmail("unique" + (int) (Math.random() * 100) + "email" + (int) (Math.random() * 10) + "@gmail.com");
@@ -73,24 +84,43 @@ public class ProfileTest {
         } catch (Exception e) {
             Assertions.fail("CREATE UNIQUE PROFILE FAILED");
         }
-
-        // creates duplicate profile
-
-
     }
 
     /**
-     * Updates email.
-     * <br/><br/>
-     * Tests for:
-     * <ul>
-     *     <li>Valid Email</li>
-     *     <li>Invalid Duplicate Email</li>
-     *     <li>Invalid Email Format</li>
-     * </ul>
+     * Tests duplicate username.
      */
     @Test
-    public void testUpdateEmail() throws Exception {
+    public void testCreateDuplicateUsernameProfile() {
+        profile.setUsername("username");
+        profile.setEmail("unique" + (int) (Math.random() * 100) + "email" + (int) (Math.random() * 10) + "@gmail.com");
+        profile.setPassword("password");
+
+        Assertions.assertThrows(SQLIntegrityConstraintViolationException.class,
+                () -> profileDao.createProfile(profile),
+                "CREATE PROFILE - DUPLICATE USERNAME TEST FAILED"
+        );
+    }
+
+    /**
+     * Tests duplicate email.
+     */
+    @Test
+    public void testCreateDuplicateEmailProfile() {
+        profile.setUsername("unique" + (int) (Math.random() * 100) + "username" + (int) (Math.random() * 10));
+        profile.setEmail("something@gmail.com");
+        profile.setPassword("password");
+
+        Assertions.assertThrows(SQLIntegrityConstraintViolationException.class,
+                () -> profileDao.createProfile(profile),
+                "CREATE PROFILE - DUPLICATE EMAIL TEST FAILED"
+        );
+    }
+
+    /**
+     * Test for valid email update.
+     */
+    @Test
+    public void testUpdateValidEmail() {
         profile.setEmail("unique" + (int)(Math.random() * 100) + "email" + (int)(Math.random() * 10) + "@gmail.com");
         try {
             // updates unique email
@@ -99,28 +129,51 @@ public class ProfileTest {
                     profile
             );
         } catch (Exception e) {
-            Assertions.fail("UNIQUE EMAIL UPDATE FAILED");
+            Assertions.fail("UPDATE PROFILE - UNIQUE EMAIL UPDATE FAILED");
         }
-
-        /*// updates email to one already existing in user database
-        profileDao.updateEmail(
-                new SecurityContextMapper(),
-                new Profile.ProfileBuilder()
-                        .setEmail("something@gmail.com")
-                        .build()
-        );*/
-
-        /*// updates email with invalid email format
-        profileDao.updateEmail(
-                new SecurityContextMapper(),
-                new Profile.ProfileBuilder()
-                        .setEmail("@.com")
-                        .build()
-        );*/
     }
 
+    /**
+     * Test for duplicate email update.
+     */
     @Test
-    public void testDeleteProfile() throws Exception {
+    public void testUpdateDuplicateEmail() {
+        profile.setEmail("something2@gmail.com");
 
+        Assertions.assertThrows(
+            SQLIntegrityConstraintViolationException.class,
+                () ->
+                    profileDao.updateEmail(
+                        new SecurityContextMapper(),
+                        profile
+                    ),
+                "UPDATE PROFILE - DUPLICATE EMAIL UPDATE FAILED"
+        );
+    }
+
+    /**
+     * Test for deleting profile. Only fails if connection to db fails otherwise always returns void even
+     * if profile is non-existent.
+     */
+    @Test
+    public void testDeleteProfile() {
+        try {
+            profileDao.deleteProfile(new SecurityContextMapper());
+        }
+        catch (Exception e) {
+            Assertions.fail("DELETE PROFILE FAILED");
+        }
+    }
+
+    /**
+     * Test for update password.
+     */
+    @Test
+    public void testUpdatePassword() {
+        try {
+            profileDao.deleteProfile(new SecurityContextMapper());
+        } catch (Exception e) {
+            Assertions.fail("UPDATE PASSWORD FAILED");
+        }
     }
 }
