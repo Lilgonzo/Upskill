@@ -102,12 +102,13 @@ public class ProfileManager {
 
     public void updateEmail(SecurityContext securityContext, Profile profile) throws Exception {
         String sql =
-                "update profile set email=" + profile.getEmail() + " where userID=" + securityContext.getUserPrincipal().getName();
+                "update profile set email=? where userID=" + securityContext.getUserPrincipal().getName();
 
         try (
                 Connection connection = DbComm.getConnection();
-                Statement statement = connection.createStatement()
+                PreparedStatement statement = connection.prepareStatement(sql)
                 ) {
+            statement.setString(1, profile.getEmail());
             statement.executeUpdate(sql);
         } catch (Exception e) {
             throw new Exception(e);
