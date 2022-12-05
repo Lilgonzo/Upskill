@@ -1,5 +1,6 @@
 package com.api.utils;
 
+import com.api.security.SecurityContextMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -67,5 +68,14 @@ public class JWTUtil {
                     .setSigningKey(key)
                     .build()
                     .parseClaimsJws(token);
+    }
+
+    /**
+     * Invalidates Jwts by setting expiration date to now.
+     */
+    public static void invalidateJwts() {
+        System.out.println(SecurityContextMapper.getClaims().getExpiration());
+        SecurityContextMapper.getClaims().setExpiration(new Date(System.currentTimeMillis() - 10000000));
+        System.out.println(SecurityContextMapper.getClaims().getExpiration());
     }
 }

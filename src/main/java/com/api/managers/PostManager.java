@@ -27,6 +27,7 @@ public class PostManager {
             preparedStatement.setString(2, post.getTitle());
             preparedStatement.setString(3, post.getDescription());
             preparedStatement.executeUpdate();
+
         } catch (Exception e) {
             throw new Exception(e);
         }

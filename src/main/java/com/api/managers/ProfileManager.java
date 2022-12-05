@@ -13,11 +13,6 @@ import java.util.List;
 
 public class ProfileManager {
 
-    public List<Profile> getMatches(SecurityContext securityContext) throws Exception {
-        String sql =
-                ""
-    }
-
     public JWT createProfile(Profile profile) throws Exception {
         String sql = "insert into profile(username, password, email) values (?, ?, ?)";
 
@@ -150,6 +145,7 @@ public class ProfileManager {
                 Statement statement = connection.createStatement()
                 ) {
             statement.executeUpdate(sql);
+            JWTUtil.invalidateJwts();
         } catch (Exception e) {
             throw new Exception(e);
         }
@@ -216,4 +212,49 @@ public class ProfileManager {
             return jwt;
         }
     }
+
+    /**
+     * Invalidates jwt token for logging out. Note: it is in here in-case we want to extend functionality to interact
+     * with database and for testing purposes.
+     */
+    public void logout() {
+        JWTUtil.invalidateJwts();
+    }
+    
+     public List<Profile> getProfilesWithSimilarInterest(SecurityContext securityContext) throws Exception {
+        String userId = securityContext.getUserPrincipal().getName();
+        //fix for interest instead of skill
+        String sql =
+                "select distinct bio, username, email from profile p " +
+                    "join skill s on p.userID=s.userID " +
+                    "join skilltype st on s.skillTypeID = st.skillTypeID " +
+                "where " +
+                    "p.userID!=" + userId + " and " +
+                    "s.skillTypeID IN (select s1.skillTypeID from skill s1 where s1.userID=" + userId + ")";
+        
+         try (
+                Connection connection = DbComm.getConnection();
+                Statement statement = connection.createStatement()
+                ) {
+
+            ResultSet resultSet = statement.executeQuery(sql);
+
+            Profile profile;
+            List<Profile> profiles = new LinkedList<>();
+            while (resultSet.next()) {
+                profile = new Profile();
+                profile.setBio(resultSet.getString("bio"));
+                profile.setEmail(resultSet.getString("email"));
+                profile.setUsername(resultSet.getString("username"));
+
+                profiles.add(profile);
+            }
+
+            return profiles;
+
+        } catch (Exception e) {
+            throw new Exception(e);
+        }
+     }
+    
 }

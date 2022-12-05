@@ -17,12 +17,12 @@ public class ProfileController {
         manager = new ProfileManager();
     }
 
-    @GET
+    @PATCH
+    @Path("profile/logout")
     @Secured
-    @Path("profile")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getMatches(@Context SecurityContext securityContext) throws Exception {
-
+    public Response logout() {
+        manager.logout();
+        return Response.ok().build();
     }
 
     @GET
@@ -100,4 +100,13 @@ public class ProfileController {
         manager.updatePassword(securityContext, profile);
         return Response.ok().build();
     }
+    
+    
+    //todo: add like and dislike profile 
+    
+    //
+    //public Response likeProfile(@Context SecurityContext securityContext, )
+        
+    //public Response dislikeProfile(@Context SecurityContext securityContext, )
+    
 }
