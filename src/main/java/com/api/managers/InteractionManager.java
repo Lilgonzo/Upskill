@@ -48,4 +48,28 @@ public class InteractionManager {
             return interactions;
         }
     }
+
+    public Interaction likeUser(SecurityContext securityContext, Interaction interaction) throws Exception {
+        String sql =
+                "insert into interactions i"+
+                "(?,?,?) values like, toUserID, fromUserID";
+
+        try (
+                Connection connection = DbComm.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sql)
+        ) {
+            preparedStatement.setString(1, interaction.getLike());
+            preparedStatement.setString(2, interaction.getToUser().userID());
+            preparedStatement.setString(3, securityContext.getUserPrincipal().getName());
+            preparedStatement.executeUpdate();
+
+            ResultSet resultSet = preparedStatement.getResultSet();
+
+            if (resultSet.next()) {
+                interaction.setLike(resultSet.getInt("like"));
+            }
+
+            return interaction;
+        }
+    }
 }

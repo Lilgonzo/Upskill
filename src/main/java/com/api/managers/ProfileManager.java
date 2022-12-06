@@ -84,6 +84,50 @@ public class ProfileManager {
         }
     }
 
+    //todo
+    //double-check :)
+    //may need to do create settings everytime unless already there since we don't have association with classes
+    public void updateSettings(SecurityContext securityContext, Profile profile) throws Exception {
+        String sql =
+                "update settings " +
+                        "set age=? where userID=" + securityContext.getUserPrincipal().getName();
+
+        try (
+                Connection connection = DbComm.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sql)
+        ) {
+            preparedStatement.setString(1, settings.getAge());
+            preparedStatement.executeUpdate();
+
+        }
+        catch (Exception e) {
+            throw new Exception(e);
+        }
+    }
+
+    //todo
+    //double-check :)
+    //I think we need two arguments for 2 different users but I am unsure
+    public void updateRating(SecurityContext securityContext, Profile profile) throws Exception {
+        String sql =
+                "update rating " +
+                        "set rating=?, set toUserID=?, set fromUserID=? where userID=" + securityContext.getUserPrincipal().getName();
+
+        try (
+                Connection connection = DbComm.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sql)
+        ) {
+            preparedStatement.setString(1, rating.getRating());
+            preparedStatement.setString(2, rating.getToUser());
+            preparedStatement.setString(3, rating.getFromUser());
+            preparedStatement.executeUpdate();
+
+        }
+        catch (Exception e) {
+            throw new Exception(e);
+        }
+    }
+
     public void updatePassword(SecurityContext securityContext, Profile profile) throws Exception {
         String sql =
                 "update profile " +
@@ -221,24 +265,24 @@ public class ProfileManager {
         JWTUtil.invalidateJwts();
     }
     
-     public List<Profile> getProfilesWithSimilarInterest(SecurityContext securityContext) throws Exception {
-        String userId = securityContext.getUserPrincipal().getName();
-        //fix for interest instead of skill
-        String sql =
-                "select distinct bio, username, email from profile p " +
-                    "join skill s on p.userID=s.userID " +
-                    "join skilltype st on s.skillTypeID = st.skillTypeID " +
-                "where " +
-                    "p.userID!=" + userId + " and " +
-                    "s.skillTypeID IN (select s1.skillTypeID from skill s1 where s1.userID=" + userId + ")";
-        
-         try (
-                Connection connection = DbComm.getConnection();
-                Statement statement = connection.createStatement()
-                ) {
+    //todo
+    //double check i am unsure
+    public List<Profile> getProfilesWithSimilarInterest(SecurityContext securityContext) throws Exception {
+       String userId = securityContext.getUserPrincipal().getName();
+       String sql =
+               "select distinct bio, username, email from profile p " +
+                   "join interest s on p.userID=s.userID " +
+                   "join skilltype st on s.skillTypeID = st.skillTypeID " +
+               "where " +
+                   "p.userID!=" + userId + " and " +
+                   "s.skillTypeID IN (select s1.skillTypeID from interest s1 where s1.userID=" + userId + ")";
+       
+        try (
+               Connection connection = DbComm.getConnection();
+               Statement statement = connection.createStatement()
+               ) {
 
             ResultSet resultSet = statement.executeQuery(sql);
-
             Profile profile;
             List<Profile> profiles = new LinkedList<>();
             while (resultSet.next()) {
@@ -253,8 +297,8 @@ public class ProfileManager {
             return profiles;
 
         } catch (Exception e) {
-            throw new Exception(e);
+           throw new Exception(e);
         }
-     }
+    }
     
 }

@@ -35,7 +35,22 @@ public class ProfileTest {
         try {
             profileManager.getProfilesWithSimilarSkills(new SecurityContextMapper());
         } catch (Exception e) {
-            Assertions.fail("TEST GET PROFILE WITH SIMILAR INTEREST FAILED", e);
+            Assertions.fail("TEST GET PROFILE WITH SIMILAR SKILLS FAILED", e);
+        }
+
+    }
+
+    /**
+     * Test for getting profiles with similar interests.
+     */
+    //todo
+    //double check
+    @Test
+    public void testGetProfilesWithSimilarInterests() {
+        try {
+            profileManager.getProfilesWithSimilarInterests(new SecurityContextMapper());
+        } catch (Exception e) {
+            Assertions.fail("TEST GET PROFILE WITH SIMILAR INTERESTS FAILED", e);
         }
 
     }
@@ -54,6 +69,81 @@ public class ProfileTest {
             );
         } catch (Exception e) {
             Assertions.fail("UPDATE BIO FAILED");
+        }
+    }
+
+    /**
+     * Tests updating SETTINGS.
+     */
+    //todo
+    //unsure if right since idk how they are associated other than database
+    @Test
+    public void testUpdateSettings() {
+        Settings settings = new Settings();
+        settings.setAge(20);
+        try {
+            profileManager.updateSettings(
+                    new SecurityContextMapper(),
+                    profile
+            );
+        } catch (Exception e) {
+            Assertions.fail("UPDATE BIO FAILED");
+        }
+    }
+
+    /**
+     * Tests like user.
+     */
+    //todo
+    //unsure if right
+    @Test
+    public void testLikeUser() {
+        Interaction interaction = new Interaction();
+        profile2 = new Profile();
+        profile2.setUsername("username");
+        profile2.setPassword("password");
+
+        jwt = profileManager.loginProfile(profile2).getJWT();
+
+        interaction.setLike(1);
+        interaction.setToUser(profile2);
+        interaction.setFromUser(profile);
+
+        try {
+            interactionManager.likeUser(
+                    new SecurityContextMapper(),
+                    interaction
+            );
+        } catch (Exception e) {
+            Assertions.fail("LIKE USER FAILED");
+        }
+    }
+
+    /**
+     * Tests updating rating.
+     */
+    //todo
+    //unsure if right since idk how they are associated other than database
+    @Test
+    public void testUpdateRating() {
+        Rating rate = new Rating();
+        profile2 = new Profile();
+        profile2.setUsername("username");
+        profile2.setPassword("password");
+
+        jwt = profileManager.loginProfile(profile2).getJWT();
+
+        rating.setToUser(profile2);
+        rating.setFromUser(profile);
+        rating.setRating(2);
+
+        try {
+            profileManager.updateRating(
+                    new SecurityContextMapper(),
+                    profile
+            );
+        } catch (Exception e) {
+            Assertions.fail("UPDATE RATING FAILED");
         }
     }
 
@@ -161,6 +251,7 @@ public class ProfileTest {
      * Test for deleting profile. Only fails if connection to db fails otherwise always returns void even
      * if profile is non-existent.
      */
+    //todo
     @Test
     public void testDeleteProfile() {
         try {

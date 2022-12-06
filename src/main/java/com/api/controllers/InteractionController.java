@@ -26,4 +26,13 @@ public class InteractionController {
     public Response getMatches(@Context SecurityContext securityContext) throws Exception {
         return Response.ok(interactionManager.getMatches(securityContext)).build();
     }
+
+    @PATCH
+    @Secured
+    @Path("like")
+    public Response likeProfile(@Context SecurityContext securityContext) throws Exception{
+        return Response.ok(interactionManager.likeUser(securityContext)).build();
+    }
+        
+    //public Response dislikeProfile(@Context SecurityContext securityContext, )
 }

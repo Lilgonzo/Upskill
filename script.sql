@@ -96,4 +96,25 @@ create table if not exists skill
             on delete cascade
 );
 
+create table if not exists interest
+(
+    userID      int not null,
+    interestTypeID int not null,
+    primary key (userID, skillTypeID),
+    constraint interest_profile_userID_fk
+        foreign key (userID) references profile (userID)
+            on delete cascade,
+    constraint interest_skilltype_skillTypeID_fk
+        foreign key (skillTypeID) references skilltype (skillTypeID)
+            on delete cascade
+);
+
+create table if not exists settings
+(
+    age         int not null,
+    primary key (userID),
+    constraint settings_profile_userID_fk
+        foreign key (userID) references profile (userID)
+            on delete cascade
+);
 
