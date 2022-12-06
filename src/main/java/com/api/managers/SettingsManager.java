@@ -5,7 +5,7 @@ import com.api.utils.DbComm;
 import jakarta.ws.rs.core.SecurityContext;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
+import java.sql.Statement;
 
 public class SettingsManager {
 
@@ -16,17 +16,18 @@ public class SettingsManager {
      * @throws Exception e
      */
     public void updateSettings(SecurityContext securityContext, Settings settings) throws Exception {
+        String userId = securityContext.getUserPrincipal().getName();
         String sql =
-                "update settings " +
-                        "set age=? where userID=" + securityContext.getUserPrincipal().getName();
+                "insert into settings " +
+                        "set age=" + settings.getAge() + " , userId=" + userId + " " +
+                        "on duplicate key update " +
+                        "age=" + settings.getAge();
 
         try (
                 Connection connection = DbComm.getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement(sql)
+                Statement statement = connection.createStatement()
         ) {
-            preparedStatement.setInt(1, settings.getAge());
-            preparedStatement.executeUpdate();
-
+            statement.executeUpdate(sql);
         }
         catch (Exception e) {
             throw new Exception(e);

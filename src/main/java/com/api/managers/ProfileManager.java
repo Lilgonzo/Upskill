@@ -1,9 +1,6 @@
 package com.api.managers;
 
-import com.api.entities.JWT;
-import com.api.entities.Profile;
-import com.api.entities.Skill;
-import com.api.entities.SkillType;
+import com.api.entities.*;
 import com.api.utils.DbComm;
 import com.api.utils.JWTUtil;
 import jakarta.ws.rs.NotFoundException;
@@ -96,27 +93,6 @@ public class ProfileManager {
                 PreparedStatement preparedStatement = connection.prepareStatement(sql)
         ) {
             preparedStatement.setString(1, profile.getUsername());
-            preparedStatement.executeUpdate();
-
-        }
-        catch (Exception e) {
-            throw new Exception(e);
-        }
-    }
-
-
-    public void updateRating(SecurityContext securityContext, Profile profile) throws Exception {
-        String sql =
-                "update rating " +
-                        "set rating=?, set toUserID=?, set fromUserID=? where userID=" + securityContext.getUserPrincipal().getName();
-
-        try (
-                Connection connection = DbComm.getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement(sql)
-        ) {
-            preparedStatement.setString(1, rating.getRating());
-            preparedStatement.setString(2, rating.getToUser());
-            preparedStatement.setString(3, rating.getFromUser());
             preparedStatement.executeUpdate();
 
         }
@@ -295,6 +271,40 @@ public class ProfileManager {
      */
     public void logout() {
         JWTUtil.invalidateJwts();
+    }
+
+    /**
+     * Returns the profiles that match the rating
+     * @param rating the rating
+     * @return list of profiles with rating
+     * @throws Exception e
+     */
+    public List<Profile> getProfilesByRating(Rating rating) throws Exception {
+        String sql =
+                "select distinct bio, username, rating, email from profile " +
+                    "left join rating r on profile.userID = r.fromUserID " +
+                    "where rating=" + rating.getRating();
+
+        try (
+                Connection connection = DbComm.getConnection();
+                Statement statement = connection.createStatement()
+                ) {
+            statement.executeQuery(sql);
+
+            ResultSet resultSet = statement.getResultSet();
+
+            List<Profile> profiles = new LinkedList<>();
+            Profile profile;
+            while (resultSet.next()) {
+                profile = new Profile();
+                profile.setUsername(resultSet.getString("username"));
+                profile.setBio(resultSet.getString("bio"));
+                profile.setRatings(List.of(rating));
+                profiles.add(profile);
+            }
+
+            return profiles;
+        }
     }
 
     /**

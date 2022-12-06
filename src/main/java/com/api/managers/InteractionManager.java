@@ -71,12 +71,6 @@ public class InteractionManager {
         ) {
             statement.executeUpdate(sql);
 
-            ResultSet resultSet = statement.getResultSet();
-
-            if (resultSet.next()) {
-                interaction.setLike(resultSet.getInt("like"));
-            }
-
             return interaction;
         }
     }

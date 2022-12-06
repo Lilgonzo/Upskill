@@ -1,5 +1,6 @@
 package com.api.controllers;
 
+import com.api.entities.Rating;
 import com.api.managers.ProfileManager;
 import com.api.entities.Profile;
 import com.api.filters.Secured;
@@ -39,6 +40,14 @@ public class ProfileController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getProfilesWithSimilarInterests(@Context SecurityContext securityContext) throws Exception {
         return Response.ok(manager.getProfilesWithSimilarInterest(securityContext)).build();
+    }
+
+    @GET
+    @Secured
+    @Path("by-rating")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getProfilesByRating(Rating rating) throws Exception {
+        return Response.ok(manager.getProfilesByRating(rating)).build();
     }
 
     @GET
@@ -109,13 +118,4 @@ public class ProfileController {
         return Response.ok().build();
     }
 
-    //todo
-    @PATCH
-    @Secured
-    @Path("rating")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response rateUser(@Context SecurityContext securityContext, Profile profile) throws Exception {
-        manager.updateRating(securityContext, profile);
-        return Response.ok().build();
-    }
 }
