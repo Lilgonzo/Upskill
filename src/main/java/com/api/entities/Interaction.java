@@ -1,6 +1,8 @@
+
 package com.api.entities;
 
 public class Interaction{
+    
     int like;
     Profile toUser;
     Profile fromUser;
