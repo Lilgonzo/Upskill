@@ -1,5 +1,7 @@
-public class Settings{
-    Int age;
+package com.api.entities;
+
+public class Settings {
+    int age;
 
     public int getAge(){
         return this.age;

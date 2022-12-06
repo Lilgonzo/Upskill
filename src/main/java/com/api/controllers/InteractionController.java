@@ -1,10 +1,9 @@
 package com.api.controllers;
 
+import com.api.entities.Interaction;
 import com.api.filters.Secured;
 import com.api.managers.InteractionManager;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -30,9 +29,9 @@ public class InteractionController {
     @PATCH
     @Secured
     @Path("like")
-    public Response likeProfile(@Context SecurityContext securityContext) throws Exception{
-        return Response.ok(interactionManager.likeUser(securityContext)).build();
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response likeProfile(@Context SecurityContext securityContext, Interaction interaction) throws Exception {
+        return Response.ok(interactionManager.likeUser(securityContext, interaction)).build();
     }
-        
-    //public Response dislikeProfile(@Context SecurityContext securityContext, )
 }

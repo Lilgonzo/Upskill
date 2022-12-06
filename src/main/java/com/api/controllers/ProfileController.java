@@ -33,14 +33,12 @@ public class ProfileController {
         return Response.ok(manager.getProfilesWithSimilarSkills(securityContext)).build();
     }
 
-    //todo
-    //unsure if path is right :P
     @GET
     @Secured
     @Path("matching-interests")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getSimilarInterestProfiles(@Context SecurityContext securityContext) throws Exception {
-        return Response.ok(manager.getProfilesWithSimilarInterests(securityContext)).build();
+    public Response getProfilesWithSimilarInterests(@Context SecurityContext securityContext) throws Exception {
+        return Response.ok(manager.getProfilesWithSimilarInterest(securityContext)).build();
     }
 
     @GET
@@ -110,20 +108,8 @@ public class ProfileController {
         manager.updatePassword(securityContext, profile);
         return Response.ok().build();
     }
-    
-    //todo
-    //unsure of path
-    @PATCH
-    @Secured
-    @Path("settings")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateSettings(@Context SecurityContext securityContext, Profile profile) throws Exception {
-        manager.updateSettings(securityContext, profile);
-        return Response.ok().build();
-    }
 
     //todo
-    //unsure of path
     @PATCH
     @Secured
     @Path("rating")

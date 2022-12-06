@@ -8,7 +8,16 @@ public class Profile {
     private String password;
     private String email;
     private String bio;
+    private List<Skill> skills;
     private List<Rating> ratings;
+
+    public List<Skill> getSkills() {
+        return skills;
+    }
+
+    public void setSkills(List<Skill> skills) {
+        this.skills = skills;
+    }
 
     public List<Rating> getRatings() {
         return ratings;

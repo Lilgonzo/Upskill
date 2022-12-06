@@ -8,6 +8,7 @@ import jakarta.ws.rs.core.SecurityContext;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class InteractionManager {
                         "join profile on userID=i.toUserId " +
                         "where " +
                         "(fromUserId=? and `like`=1) ";
-
+// todo
         try (
                 Connection connection = DbComm.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(sql)
@@ -49,21 +50,28 @@ public class InteractionManager {
         }
     }
 
+    /**
+     * Likes/Dislikes user based on the value passed by interaction object didLike.
+     * @param securityContext the user
+     * @param interaction the like and the user interacting with
+     * @return update interaction
+     * @throws Exception e
+     */
     public Interaction likeUser(SecurityContext securityContext, Interaction interaction) throws Exception {
+        String userId = securityContext.getUserPrincipal().getName();
         String sql =
-                "insert into interactions i"+
-                "(?,?,?) values like, toUserID, fromUserID";
+            "insert into interactions set " +
+                "`like`=" + interaction.getLike() + ", toUserId=" + interaction.getToUser().getUserID() + ", fromUserId=" + userId + " " +
+                "on duplicate key update " +
+                "`like`=" + interaction.getLike() + ", toUserId=" + interaction.getToUser().getUserID() + ", fromUserId=" + userId;
 
         try (
                 Connection connection = DbComm.getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement(sql)
+                Statement statement = connection.createStatement()
         ) {
-            preparedStatement.setString(1, interaction.getLike());
-            preparedStatement.setString(2, interaction.getToUser().userID());
-            preparedStatement.setString(3, securityContext.getUserPrincipal().getName());
-            preparedStatement.executeUpdate();
+            statement.executeUpdate(sql);
 
-            ResultSet resultSet = preparedStatement.getResultSet();
+            ResultSet resultSet = statement.getResultSet();
 
             if (resultSet.next()) {
                 interaction.setLike(resultSet.getInt("like"));

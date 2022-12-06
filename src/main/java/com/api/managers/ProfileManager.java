@@ -2,6 +2,8 @@ package com.api.managers;
 
 import com.api.entities.JWT;
 import com.api.entities.Profile;
+import com.api.entities.Skill;
+import com.api.entities.SkillType;
 import com.api.utils.DbComm;
 import com.api.utils.JWTUtil;
 import jakarta.ws.rs.NotFoundException;
@@ -13,6 +15,12 @@ import java.util.List;
 
 public class ProfileManager {
 
+    /**
+     * Creates profile
+     * @param profile the profile to create
+     * @return jwt token
+     * @throws Exception e
+     */
     public JWT createProfile(Profile profile) throws Exception {
         String sql = "insert into profile(username, password, email) values (?, ?, ?)";
 
@@ -41,6 +49,12 @@ public class ProfileManager {
 
     }
 
+    /**
+     * The profile to get
+     * @param username the profile to retrieve
+     * @return the profile
+     * @throws Exception not found
+     */
     public Profile getProfile(String username) throws Exception {
         String sql =
                 "select * from profile where username=?";
@@ -66,6 +80,12 @@ public class ProfileManager {
         }
     }
 
+    /**
+     * Updates username
+     * @param securityContext the profile to update
+     * @param profile the username
+     * @throws Exception e
+     */
     public void updateUsername(SecurityContext securityContext, Profile profile) throws Exception {
         String sql =
                 "update profile " +
@@ -84,30 +104,7 @@ public class ProfileManager {
         }
     }
 
-    //todo
-    //double-check :)
-    //may need to do create settings everytime unless already there since we don't have association with classes
-    public void updateSettings(SecurityContext securityContext, Profile profile) throws Exception {
-        String sql =
-                "update settings " +
-                        "set age=? where userID=" + securityContext.getUserPrincipal().getName();
 
-        try (
-                Connection connection = DbComm.getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement(sql)
-        ) {
-            preparedStatement.setString(1, settings.getAge());
-            preparedStatement.executeUpdate();
-
-        }
-        catch (Exception e) {
-            throw new Exception(e);
-        }
-    }
-
-    //todo
-    //double-check :)
-    //I think we need two arguments for 2 different users but I am unsure
     public void updateRating(SecurityContext securityContext, Profile profile) throws Exception {
         String sql =
                 "update rating " +
@@ -128,6 +125,12 @@ public class ProfileManager {
         }
     }
 
+    /**
+     * Updates password
+     * @param securityContext the user to update
+     * @param profile the password
+     * @throws Exception e
+     */
     public void updatePassword(SecurityContext securityContext, Profile profile) throws Exception {
         String sql =
                 "update profile " +
@@ -145,6 +148,12 @@ public class ProfileManager {
         }
     }
 
+    /**
+     * Updates bio
+     * @param securityContext the profile to update
+     * @param profile the email
+     * @throws Exception e
+     */
     public void updateBio(SecurityContext securityContext, Profile profile) throws Exception {
         String sql =
                 "update profile set bio=? where userID=" + securityContext.getUserPrincipal().getName();
@@ -162,6 +171,12 @@ public class ProfileManager {
         }
     }
 
+    /**
+     * Updates email
+     * @param securityContext the profile to update
+     * @param profile the email
+     * @throws Exception e
+     */
     public void updateEmail(SecurityContext securityContext, Profile profile) throws Exception {
         String sql =
                 "update profile " +
@@ -180,6 +195,11 @@ public class ProfileManager {
         }
     }
 
+    /**
+     * Deletes profile
+     * @param securityContext the profile to delete
+     * @throws Exception e
+     */
     public void deleteProfile(SecurityContext securityContext) throws Exception {
         String sql =
                 "delete from profile where userID=" + securityContext.getUserPrincipal().getName();
@@ -195,6 +215,12 @@ public class ProfileManager {
         }
     }
 
+    /**
+     * Retrieves profiles with similar skills
+     * @param securityContext the user
+     * @return a list of distinct profiles that contain similar skills
+     * @throws Exception e
+     */
     public List<Profile> getProfilesWithSimilarSkills(SecurityContext securityContext) throws Exception {
         String userId = securityContext.getUserPrincipal().getName();
 
@@ -231,6 +257,12 @@ public class ProfileManager {
         }
     }
 
+    /**
+     * Logins user given username and password.
+     * @param profile containing username and profile
+     * @return jwt token
+     * @throws Exception - User not found
+     */
     public JWT loginProfile(Profile profile) throws Exception {
         String sql = "select userID from profile where username=? and password=?";
 
@@ -264,18 +296,22 @@ public class ProfileManager {
     public void logout() {
         JWTUtil.invalidateJwts();
     }
-    
-    //todo
-    //double check i am unsure
+
+    /**
+     * Returns list of profiles with similar interests in skills.
+     * @param securityContext the user
+     * @return list of profiles with similar interests
+     * @throws Exception e
+     */
     public List<Profile> getProfilesWithSimilarInterest(SecurityContext securityContext) throws Exception {
        String userId = securityContext.getUserPrincipal().getName();
        String sql =
-               "select distinct bio, username, email from profile p " +
-                   "join interest s on p.userID=s.userID " +
+               "select distinct bio, username, email, skillType from profile p " +
+                   "join interests s on p.userID=s.userID " +
                    "join skilltype st on s.skillTypeID = st.skillTypeID " +
                "where " +
                    "p.userID!=" + userId + " and " +
-                   "s.skillTypeID IN (select s1.skillTypeID from interest s1 where s1.userID=" + userId + ")";
+                   "s.skillTypeID IN (select s1.skillTypeID from interests s1 where s1.userID=" + userId + ")";
        
         try (
                Connection connection = DbComm.getConnection();
@@ -285,11 +321,23 @@ public class ProfileManager {
             ResultSet resultSet = statement.executeQuery(sql);
             Profile profile;
             List<Profile> profiles = new LinkedList<>();
+            SkillType skillType;
+            Skill skill;
+            List<Skill> skills = new LinkedList<>();
             while (resultSet.next()) {
                 profile = new Profile();
                 profile.setBio(resultSet.getString("bio"));
                 profile.setEmail(resultSet.getString("email"));
                 profile.setUsername(resultSet.getString("username"));
+
+                skill = new Skill();
+                skillType = new SkillType();
+                skillType.setSkillType(resultSet.getString("skillType"));
+                skill.setSkillType(skillType);
+
+                skills.add(skill);
+
+                profile.setSkills(skills);
 
                 profiles.add(profile);
             }
